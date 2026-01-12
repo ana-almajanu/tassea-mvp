@@ -1,0 +1,1093 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#6F4E37" />
+  <title>Tassea MVP (Customer Demo)</title>
+  <style>
+    :root{
+      --bg:#f8f5ef;
+      --ink:#6F4E37;
+      --muted:#5A3E2D;
+      --card:#ffffff;
+      --line:#593E2C;
+      --shadow: 0 12px 30px rgba(0,0,0,.08);
+      --accent:#5A3E2D;
+      --danger:#ef4444;
+      --ok:#22c55e;
+      --warn:#f59e0b;
+      --navH: 98px;
+
+      --navItem: #6F4E37;
+      --navBg: #BA9D8A;
+
+      --pad: 22px;
+      --safeT: env(safe-area-inset-top, 0px);
+      --safeB: env(safe-area-inset-bottom, 0px);
+    }
+
+    *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+
+    .phone{
+      min-height:100dvh;
+      max-width: 430px;
+      margin: 0 auto;
+      background:#fff;
+      color: var(--ink);
+      position:relative;
+      overflow:hidden;
+      padding-top: var(--safeT);
+    }
+
+    .pageScroll{
+      height: calc(100dvh - var(--navH) - var(--safeT));
+      overflow-y:auto;
+      overflow-x:hidden;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: calc(var(--navH) + var(--safeB) + 16px);
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .pageScroll::-webkit-scrollbar{ width:0; height:0; }
+
+    .serif{ font-family: ui-serif, Georgia, "Times New Roman", Times, serif; letter-spacing:.4px; }
+    .title{ font-size: 34px; font-weight: 500; margin: 10px 0 6px; }
+    .kicker{ color: var(--muted); font-size: 14px; margin-top: 6px; line-height:1.35; }
+    .subtitle{ color: var(--muted); font-size: 12px; letter-spacing: 3px; text-transform: uppercase; }
+    .small{ color: var(--muted); font-size: 13px; }
+    .rule{ width:34px; height:2px; background: var(--accent); margin: 10px 0 14px; }
+    .section{ padding: 26px var(--pad) 0; }
+
+    .topBar{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px; }
+    .backBtn{
+      border:1px solid rgba(89,62,44,.35);
+      background: transparent;
+      color: var(--ink);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor:pointer;
+    }
+
+    .card{
+      background: var(--card);
+      border: 1px solid rgba(89,62,44,.35);
+      border-radius: 14px;
+      box-shadow: 0 6px 18px rgba(0,0,0,.05);
+    }
+    .pad{ padding: 16px; }
+    .list{ display:grid; gap: 14px; padding: 12px 0 0; }
+    .rowBetween{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
+    .chev{ opacity:.65; font-size:22px; margin-top:-2px; }
+
+    .cafeTitle{ font-weight: 650; font-size: 16px; color: var(--ink); }
+    .cafeSub{ color: var(--muted); font-size: 13px; margin-top:4px; }
+
+    .fieldLabel{
+      font-size:12px;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      color:var(--muted);
+      margin:18px 0 8px;
+    }
+    .input, select.input{
+      width:100%;
+      padding:14px 14px;
+      border:1px solid rgba(89,62,44,.35);
+      background:#fff;
+      border-radius: 12px;
+      font-size:15px;
+      outline:none;
+      appearance: none;
+      color: var(--ink);
+    }
+    .input:focus{ border-color: rgba(89,62,44,.7); }
+
+    .btn{
+      width:100%;
+      padding:14px 14px;
+      border:1px solid rgba(89,62,44,.35);
+      background:#fff;
+      color: var(--ink);
+      text-transform:uppercase;
+      letter-spacing:2px;
+      font-size:12px;
+      cursor:pointer;
+      border-radius: 12px;
+    }
+    .btnPrimary{ background: var(--ink); color:#fff; border-color: var(--ink); }
+    .btnDisabled{ background:#8c8a86; color:#fff; border-color:#8c8a86; cursor:not-allowed; opacity:.85; }
+    .btnRow{ display:flex; gap: 10px; }
+    .btnSm{ padding: 10px 12px; font-size: 11px; letter-spacing: 2px; border-radius: 12px; }
+
+    .badges{ display:flex; gap:10px; margin-top:10px; flex-wrap:wrap }
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid rgba(89,62,44,.35);
+      padding: 5px 10px;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      background:#fff;
+      border-radius: 999px;
+      color: var(--ink);
+    }
+    .badgeDot{ width:8px; height:8px; border-radius:999px; background: var(--accent); }
+    .badgeFav{ background: rgba(186,157,138,.25); }
+    .badgeFav .badgeDot{ background: var(--ink); }
+    .badgeSecond{ background: rgba(186,157,138,.14); }
+    .badgeSecond .badgeDot{ background: var(--accent); }
+
+    .progressWrap{ display:flex; gap:12px; align-items:center; margin-top: 12px; }
+    .progressIcon{
+      width: 32px; height: 32px;
+      border-radius: 10px;
+      background: var(--bg);
+      display:grid; place-items:center;
+      border: 1px solid rgba(89,62,44,.25);
+      font-size: 16px;
+      color: var(--ink);
+    }
+    .progressBar{
+      height: 8px;
+      background: rgba(186,157,138,.45);
+      border-radius: 999px;
+      overflow:hidden;
+      flex:1;
+    }
+    .progressBar > div{ height:100%; background: var(--ink); }
+    .readyPill{
+      font-size: 10px; letter-spacing:2px; text-transform:uppercase;
+      background: rgba(186,157,138,.35);
+      color: var(--ink);
+      padding:6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(89,62,44,.25);
+      white-space: nowrap;
+    }
+
+    .infoBox{
+      margin:14px 0 0;
+      background: rgba(186,157,138,.28);
+      border:1px solid rgba(89,62,44,.25);
+      border-radius:14px;
+      color: var(--muted);
+      font-size:12px;
+      padding:12px 14px;
+      line-height:1.45;
+    }
+    .infoBox b{ color: var(--ink); }
+
+    .qrFrame{
+      margin:18px auto 0;
+      width:100%;
+      max-width:320px;
+      background:#fff;
+      border:1px solid rgba(89,62,44,.35);
+      box-shadow: var(--shadow);
+      padding:22px 18px 18px;
+      position:relative;
+      border-radius: 16px;
+    }
+    .corner{ position:absolute; width:18px;height:18px;border:2px solid var(--accent); }
+    .corner.tl{ top:-8px; left:-8px; border-right:none; border-bottom:none; border-top-left-radius: 10px; }
+    .corner.tr{ top:-8px; right:-8px; border-left:none; border-bottom:none; border-top-right-radius: 10px; }
+    .corner.bl{ bottom:-8px; left:-8px; border-right:none; border-top:none; border-bottom-left-radius: 10px; }
+    .corner.br{ bottom:-8px; right:-8px; border-left:none; border-top:none; border-bottom-right-radius: 10px; }
+    .memberLabel{ margin-top:16px; color: var(--muted); font-size:11px; letter-spacing:3px; text-transform:uppercase; }
+    .memberId{ margin-top:8px; letter-spacing:3px; font-size:16px; font-weight:650; color: var(--ink); }
+    canvas.qr{ display:block; margin: 10px auto 0; width: 180px; height: 180px; border-radius: 10px; }
+
+    .bottomNav{
+      position: sticky;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: calc(var(--navH) + var(--safeB));
+      background: var(--navBg);
+      border-top: 1px solid rgba(89,62,44,.35);
+      display:grid;
+      grid-template-columns: repeat(5, 1fr);
+      padding: 12px 10px calc(14px + var(--safeB));
+      z-index: 50;
+    }
+    .navItem{
+      display:grid;
+      place-items:center;
+      gap: 6px;
+      color: var(--navItem);
+      font-size:10px;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      text-decoration:none;
+      user-select:none;
+    }
+    .navItem svg{ width: 22px; height: 22px; opacity: 1; stroke: currentColor; fill: none; }
+    .navItem.active{ color: #ffffff; }
+    .dot{ width:5px;height:5px;border-radius:999px; background:#fff; margin-top:-4px }
+
+    .centerBtn{
+      width:58px;height:58px;
+      background: var(--ink);
+      border-radius: 18px;
+      display:grid; place-items:center;
+      box-shadow: var(--shadow);
+      transform: translateY(-6px);
+      transition: transform .15s ease;
+    }
+    .navItem.active .centerBtn{ transform: translateY(-12px); }
+    .centerBtn svg{ width: 22px; height: 22px; stroke: #fff; }
+    .navCenterLabel{ margin-top:6px; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:inherit; }
+
+    .toast{
+      background: rgba(34,197,94,.12);
+      border: 1px solid rgba(34,197,94,.25);
+      color: #0f5132;
+      padding:10px 12px;
+      border-radius: 14px;
+      margin: 12px var(--pad) 0;
+      font-size: 13px;
+    }
+
+    .badgeLaptop{
+      border-color: rgba(37,99,235,.25);
+      background: rgba(37,99,235,.08);
+      color:#1e40af;
+    }
+    .badgeLaptop .badgeDot{ background:#2563eb; }
+
+
+    .center{ text-align:center; }
+    .spacer16{ height: 16px; }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .clickable{ cursor:pointer; }
+  </style>
+</head>
+
+<body>
+  <div class="phone">
+    <div id="toast" class="toast" style="display:none;"></div>
+    <div id="scroll" class="pageScroll"></div>
+
+    <nav class="bottomNav" id="nav" style="display:none;">
+      <a class="navItem" data-tab="rewards" href="#">
+        <span id="i-gift"></span><div>Rewards</div><div class="dot" id="dot-rewards" style="display:none;"></div>
+      </a>
+      <a class="navItem" data-tab="discover" href="#">
+        <span id="i-compass"></span><div>Discover</div><div class="dot" id="dot-discover" style="display:none;"></div>
+      </a>
+      <a class="navItem" data-tab="card" href="#">
+        <div class="centerBtn"><span id="i-qr"></span></div>
+        <div class="navCenterLabel">Card</div>
+        <div class="dot" id="dot-card" style="display:none;"></div>
+      </a>
+      <a class="navItem" data-tab="feed" href="#">
+        <span id="i-book"></span><div>Feed</div><div class="dot" id="dot-feed" style="display:none;"></div>
+      </a>
+      <a class="navItem" data-tab="profile" href="#">
+        <span id="i-user"></span><div>Profile</div><div class="dot" id="dot-profile" style="display:none;"></div>
+      </a>
+    </nav>
+  </div>
+
+  <script>
+    const ICONS = {
+      gift: () => `<svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/>
+        <path d="M12 7h4a2 2 0 0 0 0-4c-1.6 0-3.3 1.8-4 4z"/>
+        <path d="M12 7H8a2 2 0 0 1 0-4c1.6 0 3.3 1.8 4 4z"/></svg>`,
+      compass: () => `<svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><path d="M16 8l-2 8-8 2 2-8z"/></svg>`,
+      qr: () => `<svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3z"/>
+        <path d="M14 14h3v3h-3z"/><path d="M17 17h4v4h-4z"/><path d="M14 17h3"/><path d="M17 14h4"/></svg>`,
+      book: () => `<svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 0 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`,
+      user: () => `<svg viewBox="0 0 24 24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="8" r="4"/></svg>`
+    };
+
+    function mountIcons(){
+      i("i-gift").innerHTML = ICONS.gift();
+      i("i-compass").innerHTML = ICONS.compass();
+      i("i-qr").innerHTML = ICONS.qr();
+      i("i-book").innerHTML = ICONS.book();
+      i("i-user").innerHTML = ICONS.user();
+    }
+
+    const CAFES = [
+      { id: 1, name: "Bean Theory", area: "City Center", distance: "0.8 km", hours: "08:00–18:00", about: "Bright espresso bar + quiet seating.", laptopsOk: true },
+      { id: 2, name: "Café Lumière", area: "Old Town", distance: "1.6 km", hours: "09:00–20:00", about: "Cozy vibe, weekend events.", laptopsOk: false },
+      { id: 3, name: "Brew & Mortar", area: "Business District", distance: "2.3 km", hours: "07:30–17:00", about: "Fast weekday service, commuter-friendly.", laptopsOk: true },
+      { id: 4, name: "Riverside Roasters", area: "Riverside", distance: "3.1 km", hours: "10:00–19:00", about: "Roasts in-house. Calm afternoons.", laptopsOk: true },
+    ];
+
+
+    const FEED_SHARED_KEY = "tassea_shared_feed_v1";
+    const OCCUPANCY_SHARED_KEY = "tassea_shared_occupancy_v1";
+    const OCCUPANCY_FALLBACK_KEY = "tassea_occ_fallback_v1";
+
+
+    const DEFAULT_FEED = [
+      { id: "p1", tag: "NEW BEANS", when: "Today", cafeId: 1, title: "New coffee grounds: Ethiopia Yirgacheffe", body: "Bright jasmine + citrus. Limited batch.", details: "Tasting notes: jasmine, lemon peel, honey." },
+      { id: "p2", tag: "EVENT", when: "This week", cafeId: 2, title: "Charity acoustic concert", body: "Friday 7 PM — live set + donation jar.", details: "Entry is free. Donations go to a local shelter." },
+      { id: "p3", tag: "MENU", when: "Just dropped", cafeId: 3, title: "Brown Sugar Oat Latte", body: "Soft cinnamon finish, not too sweet.", details: "House syrup + oat milk. Ask for cinnamon foam." },
+    ];
+
+    const STORAGE_KEY = "tassea_customer_demo_v4";
+    const REWARD_GOAL = 100;
+    const POINTS_PER_PURCHASE = 10;
+
+    function makeMemberId(){
+      const s = () => Math.random().toString(16).slice(2, 6).toUpperCase();
+      return `TSA-${s()}-${s()}-${s()}`;
+    }
+
+    function defaultState(){
+      return {
+        user: null,
+        tab: "rewards",
+        view: { kind: "tab" },
+
+        favCafeId: null,
+        fav2CafeId: null,
+
+        // IMPORTANT: locked until claim from that specific favourite
+        allowChangeFav: true,
+        allowChangeFav2: true,
+
+        fav2EverSet: false,
+
+        memberId: makeMemberId(),
+        cards: [
+          { cafeId: 1, reward: "Free Cappuccino", points: 40, goal: REWARD_GOAL },
+          { cafeId: 2, reward: "Free Pastry", points: 20, goal: REWARD_GOAL },
+          { cafeId: 3, reward: "Coffee Upgrade", points: 60, goal: REWARD_GOAL },
+          { cafeId: 4, reward: "Free Espresso Shot", points: 10, goal: REWARD_GOAL },
+        ]
+      };
+    }
+
+    function loadState(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return defaultState();
+        const s = JSON.parse(raw);
+        return { ...defaultState(), ...s };
+      }catch(e){ return defaultState(); }
+    }
+    function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+    let state = loadState();
+
+    function loadSharedFeed(){
+      try{
+        const raw = localStorage.getItem(FEED_SHARED_KEY);
+        const arr = raw ? JSON.parse(raw) : [];
+        return Array.isArray(arr) ? arr : [];
+      }catch(e){ return []; }
+    }
+
+    function getMergedFeed(){
+      const shared = loadSharedFeed();
+      const merged = [...shared, ...DEFAULT_FEED];
+      merged.sort((a,b)=>{
+        const ta = a.ts || 0;
+        const tb = b.ts || 0;
+        return tb - ta;
+      });
+      return merged;
+    }
+
+    function loadOccupancy(){
+      try{
+        const raw = localStorage.getItem(OCCUPANCY_SHARED_KEY);
+        const obj = raw ? JSON.parse(raw) : {};
+        return obj && typeof obj === "object" ? obj : {};
+      }catch(e){ return {}; }
+    }
+
+    function loadOccupancyFallback(){
+      try{
+        const raw = localStorage.getItem(OCCUPANCY_FALLBACK_KEY);
+        const obj = raw ? JSON.parse(raw) : {};
+        return obj && typeof obj === "object" ? obj : {};
+      }catch(e){ return {}; }
+    }
+
+    function saveOccupancyFallback(obj){
+      try{ localStorage.setItem(OCCUPANCY_FALLBACK_KEY, JSON.stringify(obj)); }catch(e){}
+    }
+
+    function randomOccLevel(){
+      const levels = ["Low","Medium","High"];
+      return levels[Math.floor(Math.random() * levels.length)];
+    }
+
+
+    function getOccupancyForCafe(cafeId){
+      // 1) Real staff-set occupancy always wins
+      const occ = loadOccupancy();
+      const entry = occ[String(cafeId)];
+      if(entry && entry.level) return entry;
+
+      // 2) Otherwise, return a cached random value (so it doesn't change every render)
+      const fb = loadOccupancyFallback();
+      const k = String(cafeId);
+
+      if(!fb[k] || !fb[k].level){
+        fb[k] = { level: randomOccLevel(), ts: Date.now(), fallback: true };
+        saveOccupancyFallback(fb);
+      }
+
+      return fb[k];
+    }
+
+
+    function i(id){ return document.getElementById(id); }
+    function el(html){ const t=document.createElement("template"); t.innerHTML=html.trim(); return t.content.firstChild; }
+    function toast(msg){
+      const t = i("toast");
+      t.textContent = msg;
+      t.style.display = "block";
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => { t.style.display = "none"; }, 2600);
+    }
+
+    function cafeById(id){ return CAFES.find(x => x.id === id) || null; }
+    function cafeName(id){ const c=cafeById(id); return c?c.name:"Unknown"; }
+    function cardByCafe(cafeId){ return state.cards.find(x => x.cafeId === cafeId) || null; }
+
+    function multiplier(cafeId){
+      if(state.favCafeId && cafeId === state.favCafeId) return 1.00;
+      if(state.fav2CafeId && cafeId === state.fav2CafeId) return 0.85;
+      return 0.70;
+    }
+
+    function sortCards(cards){
+      const fav = state.favCafeId, fav2 = state.fav2CafeId;
+      const rank = (cafeId) => (fav && cafeId===fav) ? 0 : (fav2 && cafeId===fav2) ? 1 : 2;
+      return [...cards].sort((a,b)=>{
+        const ra=rank(a.cafeId), rb=rank(b.cafeId);
+        if(ra!==rb) return ra-rb;
+        return cafeName(a.cafeId).localeCompare(cafeName(b.cafeId));
+      });
+    }
+
+    function goToTab(tab){ state.tab=tab; state.view={kind:"tab"}; saveState(); render(); }
+    function openCafe(cafeId){ state.view={kind:"cafe", cafeId}; saveState(); render(); }
+    function openPost(postId){ state.view={kind:"post", postId}; saveState(); render(); }
+    function goBackToTab(){ state.view={kind:"tab"}; saveState(); render(); }
+
+    function setNavVisible(v){
+      i("nav").style.display = v ? "grid" : "none";
+      i("scroll").style.height = v ? "calc(100dvh - var(--navH) - var(--safeT))" : "calc(100dvh - var(--safeT))";
+    }
+    function updateNav(){
+      document.querySelectorAll(".navItem").forEach(a=>{
+        const tab=a.getAttribute("data-tab");
+        const active=(tab===state.tab);
+        a.classList.toggle("active", active);
+        const dot=i(`dot-${tab}`);
+        if(dot) dot.style.display = active ? "block" : "none";
+      });
+    }
+
+    function render(){
+      const sc = i("scroll");
+      sc.scrollTop=0;
+
+      if(!state.user){
+        setNavVisible(false);
+        sc.innerHTML="";
+        sc.appendChild(renderSignIn());
+        return;
+      }
+
+      setNavVisible(true);
+      updateNav();
+      sc.innerHTML="";
+
+      if(state.view.kind==="cafe"){ sc.appendChild(renderCafeDetail(state.view.cafeId)); return; }
+      if(state.view.kind==="post"){ sc.appendChild(renderPostDetail(state.view.postId)); return; }
+
+      if(state.tab==="rewards") sc.appendChild(renderRewards());
+      if(state.tab==="discover") sc.appendChild(renderDiscover());
+      if(state.tab==="card") sc.appendChild(renderCard());
+      if(state.tab==="feed") sc.appendChild(renderFeed());
+      if(state.tab==="profile") sc.appendChild(renderProfile());
+    }
+
+    function renderSignIn(){
+      const wrap = el(`
+        <div>
+          <div class="section center">
+            <div class="subtitle">TASSEA • MVP DEMO</div>
+            <div class="title serif">Sign In</div>
+            <div class="rule" style="margin:10px auto 14px"></div>
+            <div class="kicker">Offline demo — stored only on this device.</div>
+
+            <div class="card pad" style="margin-top:18px; text-align:left;">
+              <div class="fieldLabel">Name</div>
+              <input class="input" id="name" placeholder="Customer" />
+
+              <div class="fieldLabel">Email (optional)</div>
+              <input class="input" id="email" placeholder="email@domain.com" />
+
+              <div class="spacer16"></div>
+              <button class="btn btnPrimary" id="signin">Sign In</button>
+              <div class="small" style="margin-top:12px; line-height:1.4;">
+                Tip: Set favourites in <b>Profile</b>, then watch them pin to the top in <b>Rewards</b>.
+              </div>
+            </div>
+
+            <div class="small" style="margin-top:18px">Member ID</div>
+            <div class="mono" style="margin-top:6px; letter-spacing:2px; color:var(--ink);">${state.memberId}</div>
+          </div>
+        </div>
+      `);
+
+      wrap.querySelector("#signin").addEventListener("click", ()=>{
+        const name = wrap.querySelector("#name").value.trim() || "Customer";
+        const email = wrap.querySelector("#email").value.trim() || "";
+        state.user = { name, email };
+        saveState();
+        toast("Signed in");
+        goToTab("rewards");
+      });
+
+      return wrap;
+    }
+
+    function renderRewards(){
+      const cardsSorted = sortCards(state.cards);
+
+      const sec = el(`
+        <div class="section">
+          <div class="title serif">Rewards</div>
+          <div class="rule"></div>
+          <div class="kicker">Tap a café to open its screen</div>
+
+          <div class="card pad" style="margin-top:14px;">
+            <div class="rowBetween">
+              <div>
+                <div class="subtitle" style="margin:0;">Demo actions</div>
+                <div class="small" style="margin-top:6px; line-height:1.45;">
+                  1 purchase = <b style="color:var(--ink)">10 pts</b> (then multiplied). Goal = <b style="color:var(--ink)">100 pts</b>.
+                </div>
+              </div>
+              <div class="chev">✦</div>
+            </div>
+
+            <div class="btnRow" style="margin-top:12px;">
+              <button class="btn btnSm" id="addFav">+1 purchase at Favourite</button>
+              <button class="btn btnSm" id="addAny">+1 random purchase</button>
+            </div>
+
+            <div class="small" style="margin-top:10px;">
+              Favourite: <b style="color:var(--ink)">${state.favCafeId ? cafeName(state.favCafeId) : "Not set"}</b><br/>
+              Second favourite: <b style="color:var(--ink)">${state.fav2CafeId ? cafeName(state.fav2CafeId) : "Not set"}</b>
+            </div>
+          </div>
+
+          <div class="list" id="list"></div>
+        </div>
+      `);
+
+      const list = sec.querySelector("#list");
+
+      cardsSorted.forEach(card=>{
+        const cafe = cafeById(card.cafeId);
+        const pct = Math.min(100, Math.round((card.points / card.goal) * 100));
+        const canClaim = card.points >= card.goal;
+
+        const badges=[];
+        if(state.favCafeId && card.cafeId===state.favCafeId) badges.push(`<span class="badge badgeFav"><span class="badgeDot"></span>Favourite</span>`);
+        else if(state.fav2CafeId && card.cafeId===state.fav2CafeId) badges.push(`<span class="badge badgeSecond"><span class="badgeDot"></span>2nd fave</span>`);
+
+        const node = el(`
+          <div class="card pad clickable">
+            <div class="rowBetween">
+              <div>
+                <div class="cafeTitle">${cafe ? cafe.name : "Cafe"}</div>
+                <div class="cafeSub">${card.reward}</div>
+              </div>
+              <div class="chev">›</div>
+            </div>
+
+            ${badges.length ? `<div class="badges">${badges.join("")}</div>` : ``}
+
+            <div class="progressWrap">
+              <div class="progressIcon">🎁</div>
+              <div class="small">${card.points} / ${card.goal} pts</div>
+              <div class="progressBar"><div style="width:${pct}%"></div></div>
+              ${canClaim ? `<span class="readyPill">Ready</span>` : ``}
+            </div>
+          </div>
+        `);
+
+        node.addEventListener("click", ()=>openCafe(card.cafeId));
+        list.appendChild(node);
+      });
+
+      sec.querySelector("#addFav").addEventListener("click", ()=>{
+        if(!state.favCafeId){
+          toast("Set a favourite in Profile first");
+          goToTab("profile");
+          return;
+        }
+        addPurchases(state.favCafeId, 1);
+      });
+
+      sec.querySelector("#addAny").addEventListener("click", ()=>{
+        const c = CAFES[Math.floor(Math.random()*CAFES.length)];
+        addPurchases(c.id, 1);
+      });
+
+      return sec;
+    }
+
+    function renderCafeDetail(cafeId){
+      const cafe = cafeById(cafeId);
+      const card = cardByCafe(cafeId);
+      if(!cafe || !card) return el(`<div class="section"><div class="title serif">Not found</div></div>`);
+
+      const pct = Math.min(100, Math.round((card.points / card.goal) * 100));
+      const canClaim = card.points >= card.goal;
+      const m = multiplier(cafeId);
+
+      const isFav = state.favCafeId === cafeId;
+      const isFav2 = state.fav2CafeId === cafeId;
+
+      const badges=[];
+      if(isFav) badges.push(`<span class="badge badgeFav"><span class="badgeDot"></span>Favourite</span>`);
+      else if(isFav2) badges.push(`<span class="badge badgeSecond"><span class="badgeDot"></span>2nd fave</span>`);
+      badges.push(`<span class="badge"><span class="badgeDot"></span>${Math.round(m*100)}% points</span>`);
+      if(cafe.laptopsOk) badges.push(`<span class="badge badgeLaptop"><span class="badgeDot"></span>Laptops OK</span>`);
+
+
+      const sec = el(`
+        <div class="section">
+          <div class="topBar">
+            <button class="backBtn" id="back">Back</button>
+            <div class="subtitle">CAFÉ</div>
+          </div>
+
+          <div class="title serif">${cafe.name}</div>
+          <div class="rule"></div>
+          <div class="kicker">${cafe.area} • ${cafe.distance} • ${cafe.hours}</div>
+
+          <div class="badges" style="margin-top:12px">${badges.join("")}</div>
+
+          <div class="card pad" style="margin-top:14px">
+            <div class="subtitle" style="margin:0">Reward goal</div>
+            <div class="cafeTitle" style="margin-top:8px">${card.reward}</div>
+            <div class="small" style="margin-top:8px">${cafe.about}</div>
+
+            <div class="progressWrap">
+              <div class="progressIcon">🎁</div>
+              <div class="small">${card.points} / ${card.goal} pts</div>
+              <div class="progressBar"><div style="width:${pct}%"></div></div>
+              ${canClaim ? `<span class="readyPill">Ready</span>` : ``}
+            </div>
+
+            <div class="spacer16"></div>
+            <div class="btnRow">
+              <button class="btn btnSm" id="buy">+1 purchase</button>
+              <button class="btn btnSm" id="buy3">+3 purchases</button>
+            </div>
+
+            ${canClaim ? `
+              <div class="spacer16"></div>
+              <button class="btn btnPrimary" id="claim">Claim reward</button>
+            ` : ``}
+          </div>
+
+          <div class="infoBox">
+            <b>Points:</b> 1 purchase = <b>10</b> base points × multiplier.
+            Favourite earns fastest (<b>100%</b>), second favourite <b>85%</b>, others <b>70%</b>.
+          </div>
+        </div>
+      `);
+
+      sec.querySelector("#back").addEventListener("click", goBackToTab);
+      sec.querySelector("#buy").addEventListener("click", ()=>addPurchases(cafeId, 1));
+      sec.querySelector("#buy3").addEventListener("click", ()=>addPurchases(cafeId, 3));
+
+      if(canClaim){
+        sec.querySelector("#claim").addEventListener("click", ()=>{
+          card.points = 0;
+
+          // ✅ NEW: unlock only the matching favourite slot
+          if(state.favCafeId && cafeId === state.favCafeId){
+            state.allowChangeFav = true;
+            toast("Reward claimed — Favourite unlocked");
+          }
+          if(state.fav2CafeId && cafeId === state.fav2CafeId){
+            state.allowChangeFav2 = true;
+            toast("Reward claimed — Second favourite unlocked");
+          }
+          if(!(state.favCafeId===cafeId || state.fav2CafeId===cafeId)){
+            toast("Reward claimed");
+          }
+
+          saveState();
+          render();
+        });
+      }
+
+      return sec;
+    }
+
+    function addPurchases(cafeId, purchases){
+      const m = multiplier(cafeId);
+      const base = 10 * purchases;
+      const delta = Math.max(1, Math.round(base * m));
+
+      const card = cardByCafe(cafeId);
+      if(!card){ toast("No card found"); return; }
+
+      card.points += delta;
+      toast(`+${delta} pts at ${cafeName(cafeId)} (${Math.round(m*100)}%)`);
+      saveState();
+      render();
+    }
+
+    function renderDiscover(){
+      const sec = el(`
+        <div class="section">
+          <div class="title serif">Discover</div>
+          <div class="rule"></div>
+          <div class="kicker">Tap a café to open its details</div>
+          <div class="list" id="list"></div>
+
+          <div class="infoBox" style="margin-top:14px">
+            <b>Occupancy:</b> If the employee app sets occupancy, it shows here (Low/Medium/High).
+          </div>
+        </div>
+      `);
+
+      const list = sec.querySelector("#list");
+
+      function occBadge(level){
+        if(level==="Low") return `<span class="badge"><span class="badgeDot" style="background:var(--ok)"></span>Low</span>`;
+        if(level==="Medium") return `<span class="badge"><span class="badgeDot" style="background:var(--warn)"></span>Medium</span>`;
+        return `<span class="badge"><span class="badgeDot" style="background:var(--danger)"></span>High</span>`;
+      }
+
+      CAFES.forEach(c=>{
+        const occ = getOccupancyForCafe(c.id);
+        const node = el(`
+          <div class="card pad clickable">
+            <div class="rowBetween">
+              <div>
+                <div class="cafeTitle">${c.name}</div>
+                <div class="cafeSub">${c.area} • ${c.distance}</div>
+              </div>
+              <div class="chev">›</div>
+            </div>
+
+          <div class="badges">
+            ${occ ? occBadge(occ.level) : `<span class="badge"><span class="badgeDot"></span>Unknown</span>`}
+            ${c.laptopsOk ? `<span class="badge badgeLaptop"><span class="badgeDot"></span>Laptops OK</span>` : ``}
+            <span class="badge"><span class="badgeDot"></span>${c.hours}</span>
+          </div>
+
+
+            <div class="small" style="margin-top:10px; line-height:1.5;">${c.about}</div>
+          </div>
+        `);
+
+        node.addEventListener("click", ()=>openCafe(c.id));
+        list.appendChild(node);
+      });
+
+      return sec;
+    }
+
+    function renderCard(){
+      const sec = el(`
+        <div class="section center">
+          <div class="title serif">Your Card</div>
+          <div class="rule" style="margin:10px auto 14px"></div>
+          <div class="kicker">Present at checkout to earn points</div>
+
+          <div class="qrFrame">
+            <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+            <canvas class="qr" id="qr" width="180" height="180"></canvas>
+            <div class="memberLabel">Member ID</div>
+            <div class="memberId">${state.memberId}</div>
+          </div>
+
+          <div class="small" style="margin-top:18px">Your digital loyalty card</div>
+        </div>
+      `);
+
+      drawFakeQR(sec.querySelector("#qr"), state.memberId);
+      return sec;
+    }
+
+    function renderFeed(){
+      const FEED = getMergedFeed();
+
+      const sec = el(`
+        <div class="section">
+          <div class="title serif">Feed</div>
+          <div class="rule"></div>
+          <div class="kicker">Tap a post to open details</div>
+          <div class="list" id="posts"></div>
+        </div>
+      `);
+
+      const posts = sec.querySelector("#posts");
+
+      FEED.forEach(p=>{
+        const cafe=cafeById(p.cafeId);
+        const node = el(`
+          <div class="card pad clickable">
+            <div class="rowBetween">
+              <div class="subtitle" style="margin:0">${p.tag}</div>
+              <div class="small">${p.when || "Recently"}</div>
+            </div>
+            <div class="cafeTitle" style="margin-top:8px">${p.title}</div>
+            <div class="cafeSub" style="margin-top:6px">${cafe?cafe.name:"Cafe"}</div>
+            <div class="small" style="margin-top:10px; line-height:1.45;">${p.body}</div>
+          </div>
+        `);
+        node.addEventListener("click", ()=>openPost(p.id));
+        posts.appendChild(node);
+      });
+
+      return sec;
+    }
+
+    function renderPostDetail(postId){
+      const FEED = getMergedFeed();
+      const p = FEED.find(x=>x.id===postId) || null;
+      const cafe = p ? cafeById(p.cafeId) : null;
+
+      const sec = el(`
+        <div class="section">
+          <div class="topBar">
+            <button class="backBtn" id="back">Back</button>
+            <div class="subtitle">${p ? p.tag : "POST"}</div>
+          </div>
+
+          <div class="title serif">${p ? p.title : "Not found"}</div>
+          <div class="rule"></div>
+          ${p ? `<div class="kicker">${p.when || "Recently"} • ${cafe ? cafe.name : "Cafe"}</div>` : ``}
+
+          ${p ? `
+            <div class="card pad" style="margin-top:14px">
+              <div class="subtitle" style="margin:0">Summary</div>
+              <div class="small" style="margin-top:10px; line-height:1.55;">${p.body}</div>
+              <div class="spacer16"></div>
+              <div class="subtitle" style="margin:0">Details</div>
+              <div class="small" style="margin-top:10px; line-height:1.55;">${p.details || "—"}</div>
+              <div class="spacer16"></div>
+              <button class="btn" id="openCafe">View café</button>
+            </div>
+          ` : ``}
+        </div>
+      `);
+
+      sec.querySelector("#back").addEventListener("click", goBackToTab);
+      if(p){
+        sec.querySelector("#openCafe").addEventListener("click", ()=>openCafe(p.cafeId));
+      }
+      return sec;
+    }
+
+    function renderProfile(){
+      const fav = state.favCafeId ? cafeName(state.favCafeId) : "Not set";
+      const fav2 = state.fav2CafeId ? cafeName(state.fav2CafeId) : "Not set";
+
+      const hasFavSet = state.favCafeId !== null;
+      const favDisabled = hasFavSet && !state.allowChangeFav;
+      const fav2Disabled = hasFavSet && !state.allowChangeFav2;
+
+      const canSave = (!favDisabled) || (!fav2Disabled);
+
+      const sec = el(`
+        <div class="section">
+          <div class="title serif">Profile</div>
+          <div class="rule"></div>
+          <div class="kicker">${escapeHtml(state.user.name)}${state.user.email ? " • " + escapeHtml(state.user.email) : ""}</div>
+
+          <div class="card pad" style="margin-top:18px">
+            <div class="fieldLabel">Favourites (how points multiply)</div>
+
+            <div class="infoBox">
+              <b>Base rule:</b> 1 purchase = <b>10</b> base points.<br/>
+              Then we multiply based on where you buy coffee:<br/><br/>
+              • <b>Favourite (100%)</b>: 10 × 1.00 = <b>10</b> points<br/>
+              • <b>Second favourite (85%)</b>: 10 × 0.85 = <b>9</b> points (rounded)<br/>
+              • <b>Other cafés (70%)</b>: 10 × 0.70 = <b>7</b> points<br/><br/>
+              <b>Unlock rule:</b><br/>
+              • Claim at <b>Favourite</b> → unlock changing <b>Favourite</b><br/>
+              • Claim at <b>2nd favourite</b> → unlock changing <b>2nd favourite</b>
+            </div>
+
+            <div class="small" style="margin-top:12px; line-height:1.6">
+              <div><strong>Favourite:</strong> <span style="color:var(--ink)">${fav}</span> (${favDisabled ? "Locked" : "Unlocked"})</div>
+              <div><strong>Second favourite:</strong> <span style="color:var(--ink)">${fav2}</span> (${fav2Disabled ? "Locked" : "Unlocked"})</div>
+            </div>
+
+            <div class="fieldLabel">Favourite coffee shop</div>
+            <select class="input" id="selFav" ${favDisabled ? "disabled" : ""}>
+              <option value="">Select…</option>
+              ${CAFES.map(c => `<option value="${c.id}" ${state.favCafeId===c.id?"selected":""}>${escapeHtml(c.name)}</option>`).join("")}
+            </select>
+
+            <div class="fieldLabel">Second favourite</div>
+            <select class="input" id="selFav2" ${fav2Disabled ? "disabled" : ""}>
+              <option value="">None</option>
+              ${CAFES.map(c => `<option value="${c.id}" ${state.fav2CafeId===c.id?"selected":""}>${escapeHtml(c.name)}</option>`).join("")}
+            </select>
+
+            <div class="spacer16"></div>
+            <div class="btnRow">
+              ${canSave ? `<button class="btn btnPrimary" id="saveFavs" type="button">Save</button>`
+                        : `<button class="btn btnDisabled" type="button" disabled>Locked</button>`}
+              <button class="btn" id="resetDemo" type="button">Reset demo</button>
+            </div>
+          </div>
+
+          <div class="spacer16"></div>
+          <button class="btn" id="signout" type="button">Sign out</button>
+        </div>
+      `);
+
+      if(canSave){
+        sec.querySelector("#saveFavs").addEventListener("click", ()=>{
+        // Read UI selections
+        const pickedFav = parseInt(sec.querySelector("#selFav").value || "", 10);
+        const pickedFav2 = parseInt(sec.querySelector("#selFav2").value || "", 10);
+
+        const newFavId = Number.isNaN(pickedFav) ? null : pickedFav;
+        const newFav2Id = Number.isNaN(pickedFav2) ? null : pickedFav2;
+
+        // If favourite is editable, require a valid favourite
+        if (!favDisabled && !newFavId){
+            toast("Pick a favourite first");
+            return;
+        }
+
+        // Avoid duplicates (only if user is editing one/both slots)
+        const effectiveFav = favDisabled ? state.favCafeId : newFavId;
+        const effectiveFav2 = fav2Disabled ? state.fav2CafeId : newFav2Id;
+        if (effectiveFav && effectiveFav2 && effectiveFav === effectiveFav2){
+            toast("Pick two different cafés");
+            return;
+        }
+
+        // ✅ Apply ONLY the slots that are currently unlocked/editable
+        if (!favDisabled){
+            state.favCafeId = newFavId;
+            state.allowChangeFav = false; // ✅ lock again after saving favourite
+        }
+
+        if (!fav2Disabled){
+            state.fav2CafeId = newFav2Id;
+
+            // Track if second favourite was ever set to a real cafe
+            if (newFav2Id) state.fav2EverSet = true;
+
+            // ✅ lock again after saving 2nd favourite
+            // BUT: if user never set a 2nd fave (still null, never set), keep it editable
+            if (state.fav2EverSet) state.allowChangeFav2 = false;
+            else state.allowChangeFav2 = true;
+        }
+
+        saveState();
+        toast("Saved");
+        render();
+        });
+
+      }
+
+      sec.querySelector("#signout").addEventListener("click", ()=>{
+        state.user = null;
+        saveState();
+        toast("Signed out");
+        render();
+      });
+
+      sec.querySelector("#resetDemo").addEventListener("click", ()=>{
+        localStorage.removeItem(STORAGE_KEY);
+        state = defaultState();
+        saveState();
+        toast("Demo reset");
+        render();
+      });
+
+      return sec;
+    }
+
+    function cssVar(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+    function drawFakeQR(canvas, seedStr){
+      const ctx = canvas.getContext("2d");
+      const size = canvas.width;
+      const ink = cssVar("--ink") || "#6F4E37";
+
+      ctx.fillStyle="#fff"; ctx.fillRect(0,0,size,size);
+
+      let seed=0;
+      for(let i=0;i<seedStr.length;i++) seed=(seed*31 + seedStr.charCodeAt(i))>>>0;
+      function rnd(){ seed=(1664525*seed + 1013904223)>>>0; return seed/4294967296; }
+
+      const cells=29;
+      const cell=Math.floor(size/cells);
+      const pad=Math.floor((size-cell*cells)/2);
+
+      function finder(x,y){
+        ctx.fillStyle=ink; ctx.fillRect(pad+x*cell,pad+y*cell,7*cell,7*cell);
+        ctx.fillStyle="#fff"; ctx.fillRect(pad+(x+1)*cell,pad+(y+1)*cell,5*cell,5*cell);
+        ctx.fillStyle=ink; ctx.fillRect(pad+(x+2)*cell,pad+(y+2)*cell,3*cell,3*cell);
+      }
+      finder(1,1); finder(cells-8,1); finder(1,cells-8);
+
+      ctx.fillStyle=ink;
+      for(let y=0;y<cells;y++){
+        for(let x=0;x<cells;x++){
+          const inFinder =
+            (x>=1 && x<=7 && y>=1 && y<=7) ||
+            (x>=cells-8 && x<=cells-2 && y>=1 && y<=7) ||
+            (x>=1 && x<=7 && y>=cells-8 && y<=cells-2);
+          if(inFinder) continue;
+          if(rnd()>0.72) ctx.fillRect(pad+x*cell,pad+y*cell,cell,cell);
+        }
+      }
+    }
+
+    function escapeHtml(s){
+      return String(s).replace(/[&<>"']/g, c => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"
+      }[c]));
+    }
+
+    function wireNav(){
+      i("nav").addEventListener("click", (e)=>{
+        const a = e.target.closest(".navItem");
+        if(!a) return;
+        e.preventDefault();
+        goToTab(a.getAttribute("data-tab"));
+      });
+    }
+
+    mountIcons();
+    wireNav();
+    render();
+  </script>
+</body>
+</html>
